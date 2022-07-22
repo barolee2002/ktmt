@@ -11,6 +11,7 @@
 	mess_opcode: .asciiz "Opcode: "
 	mess_operand: .asciiz "Toan hang: "
 	mess_valid: .asciiz "hop le.\n"
+	mess_continue: .asciiz "Ban muon tiep tuc chuong trinh?(0.Yes/1.No)"
 	command: .space 100
 	opcode: .space 10
 	token: .space 20
@@ -176,7 +177,7 @@ Compare_Token:
 	Token_error:
 		j notFound
 
-#hang so nguyên
+#hang so nguyen
 Check_Integer: 
 	la $a0, command
 	la $a1, number 
@@ -348,7 +349,43 @@ Read_Operand_3:
 	li $t8, 0 
 	beq $s0, $t8, Check_Null_Token
 	j end
-
+continue: # lap lai chuong trinh.
+	li $v0, 4
+	la $a0, mess_continue
+	syscall
+	li $v0, 5
+	syscall
+	add $t0, $v0, $zero
+	beq $t0, $zero, resetAll
+	j TheEnd
+resetAll:
+	li $v0, 0 
+	li $v1, 0
+	li $a0, 0 
+	li $a1, 0
+	li $a2, 0
+	li $a3, 0
+	li $t0, 0
+	li $t1, 0
+	li $t2, 0
+	li $t3, 0
+	li $t4, 0
+	li $t5, 0
+	li $t6, 0
+	li $t7, 0
+	li $t8, 0
+	li $t9, 0
+	li $s0, 0
+	li $s1, 0
+	li $s2, 0
+	li $s3, 0
+	li $s4, 0
+	li $s5, 0
+	li $s6, 0
+	li $s7, 0
+	li $k0, 0
+	li $k1, 0
+	j enter_input
 notFound:
 	li $v0, 4
 	la $a0, mess_not_found
@@ -363,6 +400,7 @@ end:
 	li $v0, 4
 	la $a0, mess_correct
 	syscall
+	j continue
 TheEnd:
 	li $v0,10
 	syscall
